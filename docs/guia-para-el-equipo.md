@@ -247,9 +247,11 @@ Misma receta. Ruta sugerida: `/api/v1/actividades`. Si no hay tabla, no la creen
 
 Casi seguro son **consultas** sobre tablas de otros módulos (`GET` que agrupa), no una tabla `reporte`. Primero pregunten de dónde salen los números.
 
-### Recuperar contraseña
+### Recuperar contraseña (y las vistas de login)
 
-El Figma tiene `/recuperar`. En SQL no hay tabla de tokens de correo. Coordinen: o se usa una tabla nueva (acuerdo del grupo) o un servicio de correo. Ruta prevista: `POST /api/v1/auth/recover`. No copien la contraseña en logs.
+Eso es **una sola tarea**, asignada. No la implementen el resto. Receta: [tarea-login-y-recuperar.md](./tarea-login-y-recuperar.md).
+
+El `POST /api/v1/auth/login` ya existe. Las pantallas `/login` y `/recuperar` se quitaron para que las cree quien tenga la tarea. Rutas previstas de recuperar: `POST /api/v1/auth/recover`, `/recover/verify`, `/recover/reset`. No copien la contraseña en logs.
 
 ### Notificaciones (pestaña de Mi perfil)
 

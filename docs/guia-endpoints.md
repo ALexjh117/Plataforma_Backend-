@@ -17,7 +17,7 @@ Ahí va el orden modelo → validador → servicio → transformer → controlad
 
 | Método | Ruta | Notas |
 | --- | --- | --- |
-| `POST` | `/auth/login` `/auth/signup` | público |
+| `POST` | `/auth/login` `/auth/signup` | público. Recuperar (`/auth/recover`) es la tarea de autenticación |
 | `GET/PATCH` | `/account/profile` | ficha de la persona |
 | `PATCH` | `/account/password` | |
 | `POST` | `/account/logout` | |
