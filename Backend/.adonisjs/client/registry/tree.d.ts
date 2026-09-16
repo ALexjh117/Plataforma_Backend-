@@ -10,12 +10,31 @@ export interface ApiDefinition {
       store: typeof routes['auth.access_tokens.store']
     }
   }
-  profile: {
+  account: {
     profile: {
-      show: typeof routes['profile.profile.show']
+      show: typeof routes['account.profile.show']
+      update: typeof routes['account.profile.update']
+      changePassword: typeof routes['account.profile.change_password']
     }
     accessTokens: {
-      destroy: typeof routes['profile.access_tokens.destroy']
+      destroy: typeof routes['account.access_tokens.destroy']
+    }
+  }
+  modules: {
+    modules: {
+      index: typeof routes['modules.modules.index']
+      tree: typeof routes['modules.modules.tree']
+      catalog: typeof routes['modules.modules.catalog']
+      store: typeof routes['modules.modules.store']
+    }
+  }
+  roles: {
+    roles: {
+      index: typeof routes['roles.roles.index']
+      store: typeof routes['roles.roles.store']
+      show: typeof routes['roles.roles.show']
+      update: typeof routes['roles.roles.update']
+      syncModules: typeof routes['roles.roles.sync_modules']
     }
   }
 }

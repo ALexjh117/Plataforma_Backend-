@@ -28,10 +28,39 @@ router
     router
       .group(() => {
         router.get('profile', [controllers.Profile, 'show'])
+        router.patch('profile', [controllers.Profile, 'update'])
+        router.patch('password', [controllers.Profile, 'changePassword'])
         router.post('logout', [controllers.AccessTokens, 'destroy'])
       })
       .prefix('account')
-      .as('profile')
+      .as('account')
       .use(middleware.auth())
+      .use(middleware.account())
+
+    router
+      .group(() => {
+        router.get('/', [controllers.Modules, 'index'])
+        router.get('tree', [controllers.Modules, 'tree'])
+        router.get('catalog', [controllers.Modules, 'catalog']).use(middleware.admin())
+        router.post('catalog', [controllers.Modules, 'store']).use(middleware.admin())
+      })
+      .prefix('modules')
+      .as('modules')
+      .use(middleware.auth())
+      .use(middleware.account())
+
+    router
+      .group(() => {
+        router.get('/', [controllers.Roles, 'index'])
+        router.post('/', [controllers.Roles, 'store'])
+        router.get(':id', [controllers.Roles, 'show'])
+        router.patch(':id', [controllers.Roles, 'update'])
+        router.put(':id/modules', [controllers.Roles, 'syncModules'])
+      })
+      .prefix('roles')
+      .as('roles')
+      .use(middleware.auth())
+      .use(middleware.account())
+      .use(middleware.admin())
   })
   .prefix('/api/v1')

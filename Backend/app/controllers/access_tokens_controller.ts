@@ -2,16 +2,34 @@ import User from '#models/user'
 import { loginValidator } from '#validators/user'
 import type { HttpContext } from '@adonisjs/core/http'
 import UserTransformer from '#transformers/user_transformer'
+import { Exception } from '@adonisjs/core/exceptions'
+import ProfileService from '#services/profile_service'
 
 export default class AccessTokensController {
   async store({ request, serialize }: HttpContext) {
-    const { email, password } = await request.validateUsing(loginValidator)
+    const payload = await request.validateUsing(loginValidator)
+    const identifier = payload.usuario ?? payload.email
 
-    const user = await User.verifyCredentials(email, password)
+    if (!identifier) {
+      throw new Exception('Ingresa tu correo o documento', {
+        status: 422,
+        code: 'E_VALIDATION_ERROR',
+      })
+    }
+
+    const user = await User.verifyCredentials(identifier, payload.password)
+    if (!user.estado) {
+      throw new Exception('La cuenta está inactiva', {
+        status: 403,
+        code: 'E_ACCOUNT_INACTIVE',
+      })
+    }
+
+    const profile = await new ProfileService().load(user)
     const token = await User.accessTokens.create(user)
 
     return serialize({
-      user: UserTransformer.transform(user),
+      user: UserTransformer.transform(profile),
       token: token.value!.release(),
     })
   }

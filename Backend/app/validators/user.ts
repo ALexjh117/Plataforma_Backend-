@@ -1,26 +1,41 @@
 import vine from '@vinejs/vine'
 
-/**
- * Shared rules for email and password.
- */
-const email = () => vine.string().email().maxLength(254)
+const email = () => vine.string().email().maxLength(150)
 const password = () => vine.string().minLength(8).maxLength(32)
 
-/**
- * Validator to use when performing self-signup
- */
 export const signupValidator = vine.create({
-  fullName: vine.string().nullable(),
-  email: email().unique({ table: 'users', column: 'email' }),
+  nombres: vine.string().trim().minLength(1).maxLength(100),
+  apellidos: vine.string().trim().minLength(1).maxLength(100),
+  tipoDocumento: vine.string().trim().minLength(1).maxLength(30),
+  numeroDocumento: vine
+    .string()
+    .trim()
+    .minLength(1)
+    .maxLength(30)
+    .unique({ table: 'usuario', column: 'numero_documento' }),
+  email: email().unique({ table: 'usuario', column: 'correo' }),
   password: password(),
   passwordConfirmation: password().sameAs('password'),
+  idPerfil: vine.number().positive().exists({ table: 'perfil', column: 'id_perfil' }),
+  idCformacion: vine.number().positive().exists({ table: 'c_formacion', column: 'id_cformacion' }),
 })
 
-/**
- * Validator to use before validating user credentials
- * during login
- */
 export const loginValidator = vine.create({
-  email: email(),
+  email: vine.string().trim().optional(),
+  usuario: vine.string().trim().optional(),
   password: vine.string(),
+})
+
+export const updateProfileValidator = vine.create({
+  nombres: vine.string().trim().minLength(1).maxLength(100).optional(),
+  apellidos: vine.string().trim().minLength(1).maxLength(100).optional(),
+  tipoDocumento: vine.string().trim().minLength(1).maxLength(30).optional(),
+  numeroDocumento: vine.string().trim().minLength(1).maxLength(30).optional(),
+  email: email().optional(),
+})
+
+export const changePasswordValidator = vine.create({
+  currentPassword: vine.string(),
+  password: password(),
+  passwordConfirmation: password().sameAs('password'),
 })
