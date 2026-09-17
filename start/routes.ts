@@ -1,0 +1,80 @@
+/*
+|--------------------------------------------------------------------------
+| Routes file
+|--------------------------------------------------------------------------
+|
+| The routes file is used for defining the HTTP routes.
+|
+*/
+
+import { middleware } from '#start/kernel'
+import router from '@adonisjs/core/services/router'
+import { controllers } from '#generated/controllers'
+
+router.get('/', () => {
+  return { hello: 'world' }
+})
+
+router
+  .group(() => {
+    router
+      .group(() => {
+        router.post('signup', [controllers.NewAccount, 'store'])
+        router.post('login', [controllers.AccessTokens, 'store'])
+      })
+      .prefix('auth')
+      .as('auth')
+
+    router
+      .group(() => {
+        router.get('profile', [controllers.Profile, 'show'])
+        router.patch('profile', [controllers.Profile, 'update'])
+        router.patch('password', [controllers.Profile, 'changePassword'])
+        router.post('logout', [controllers.AccessTokens, 'destroy'])
+      })
+      .prefix('account')
+      .as('account')
+      .use(middleware.auth())
+      .use(middleware.account())
+
+    router
+      .group(() => {
+        router.get('/', [controllers.Modules, 'index'])
+        router.get('tree', [controllers.Modules, 'tree'])
+        router.get('catalog', [controllers.Modules, 'catalog']).use(middleware.admin())
+        router.post('catalog', [controllers.Modules, 'store']).use(middleware.admin())
+      })
+      .prefix('modules')
+      .as('modules')
+      .use(middleware.auth())
+      .use(middleware.account())
+
+    router
+      .group(() => {
+        router.get('/', [controllers.Roles, 'index'])
+        router.post('/', [controllers.Roles, 'store'])
+        router.get(':id', [controllers.Roles, 'show'])
+        router.patch(':id', [controllers.Roles, 'update'])
+        router.put(':id/modules', [controllers.Roles, 'syncModules'])
+      })
+      .prefix('roles')
+      .as('roles')
+      .use(middleware.auth())
+      .use(middleware.account())
+      .use(middleware.admin())
+
+    router
+      .group(() => {
+        router.get('options', [controllers.Users, 'options'])
+        router.get('/', [controllers.Users, 'index'])
+        router.post('/', [controllers.Users, 'store'])
+        router.get(':id', [controllers.Users, 'show'])
+        router.patch(':id', [controllers.Users, 'update'])
+      })
+      .prefix('users')
+      .as('users')
+      .use(middleware.auth())
+      .use(middleware.account())
+      .use(middleware.admin())
+  })
+  .prefix('/api/v1')

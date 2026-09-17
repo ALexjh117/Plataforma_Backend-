@@ -14,10 +14,10 @@ Receta general de capas (modelo → validador → servicio → transformer → c
 
 | Pieza | Dónde |
 | --- | --- |
-| `POST /api/v1/auth/login` | `Backend/app/controllers/access_tokens_controller.ts` método `store` |
-| Validador | `Backend/app/validators/user.ts` → `loginValidator` |
-| Ruta pública | `Backend/start/routes.ts` grupo `auth` |
-| Usuario + contraseña del dump | `Backend/app/models/user.ts` (`verifyPassword`) |
+| `POST /api/v1/auth/login` | `app/controllers/access_tokens_controller.ts` método `store` |
+| Validador | `app/validators/user.ts` → `loginValidator` |
+| Ruta pública | `start/routes.ts` grupo `auth` |
+| Usuario + contraseña del dump | `app/models/user.ts` (`verifyPassword`) |
 | Guardar token y entrar | Frontend `src/lib/auth.tsx` función `login` |
 | Llamadas HTTP | Frontend `src/lib/api.ts` |
 
@@ -79,7 +79,6 @@ En SQL del dump **no** hay tabla de códigos. **No alteres `plataforma_1.sql`**.
 ### Paso 1 — Migración (tabla nueva)
 
 ```bash
-cd Backend
 node ace make:migration create_password_reset_codes_table
 ```
 
@@ -95,7 +94,7 @@ Columnas mínimas (nombres en español, como el resto):
 | `usado_en` | `null` hasta que cambien la clave |
 | `created_at` | |
 
-Copia el estilo de `Backend/database/migrations/1768620764696_create_access_tokens_table.ts`.
+Copia el estilo de `database/migrations/1768620764696_create_access_tokens_table.ts`.
 
 ```bash
 node ace migration:run
@@ -103,7 +102,7 @@ node ace migration:run
 
 ### Paso 2 — Modelo
 
-`Backend/app/models/password_reset_code.ts`
+`app/models/password_reset_code.ts`
 
 - `static table = 'password_reset_codes'`
 - `columnName` si el campo SQL no coincide con el nombre en TypeScript
@@ -111,7 +110,7 @@ node ace migration:run
 
 ### Paso 3 — Validador
 
-`Backend/app/validators/password_recovery.ts`
+`app/validators/password_recovery.ts`
 
 Tres bodies distintos:
 
@@ -137,7 +136,7 @@ export const recoverResetValidator = vine.create({
 
 ### Paso 4 — Servicio (aquí va la lógica)
 
-`Backend/app/services/password_recovery_service.ts`
+`app/services/password_recovery_service.ts`
 
 Reglas (no las saltes):
 
@@ -153,7 +152,7 @@ Métodos sugeridos: `request(email)`, `verify(email, code)`, `reset(email, code,
 
 ### Paso 5 — Controlador
 
-`Backend/app/controllers/password_recovery_controller.ts`
+`app/controllers/password_recovery_controller.ts`
 
 El controlador **no** arma SQL. Solo:
 
@@ -167,7 +166,7 @@ async store({ request }: HttpContext) {
 
 Igual para `verify` y `reset`. Respuesta de recurso con `serialize` solo si devuelves datos. Aquí basta un `{ message }`.
 
-Si Adonis no lista el controlador, mira `Backend/.adonisjs/server/controllers.ts` (se genera solo; reinicia `npm run dev`).
+Si Adonis no lista el controlador, mira `.adonisjs/server/controllers.ts` (se genera solo; reinicia `npm run dev`).
 
 ### Paso 6 — Rutas (públicas, junto al login)
 
@@ -195,7 +194,7 @@ Errores: `422` datos mal, código malo o vencido. `200` si salió bien. **No** u
 
 Archivo ya dejado (en skip) para que sepas cuándo está listo:
 
-`Backend/tests/functional/auth_login_and_recovery.spec.ts`
+`tests/functional/auth_login_and_recovery.spec.ts`
 
 Cuando tu API cumpla eso:
 
@@ -203,7 +202,6 @@ Cuando tu API cumpla eso:
 2. Corre:
 
 ```bash
-cd Backend
 node ace test
 ```
 

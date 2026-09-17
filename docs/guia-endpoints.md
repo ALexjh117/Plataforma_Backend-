@@ -27,5 +27,8 @@ Ahí va el orden modelo → validador → servicio → transformer → controlad
 | `GET/POST` | `/roles` | perfiles/roles, solo admin |
 | `GET/PATCH` | `/roles/:id` | |
 | `PUT` | `/roles/:id/modules` | `{ moduleIds }` |
+| `GET` | `/users/options` | perfiles activos y centros, solo admin |
+| `GET/POST` | `/users` | listar / crear usuario con `idPerfil`, solo admin |
+| `GET/PATCH` | `/users/:id` | ficha y cambio de perfil/datos, solo admin |
 
 Cuentas dump, password `123456`: Carlos Administrador, Juan Almacenista, María Funcionario.

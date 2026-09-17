@@ -2,6 +2,8 @@
 
 Esta API es **AdonisJS 7**. Si nunca han tocado backend, léan esto antes de abrir archivos.
 
+**Node 24.21.0 + npm 11.19.0**, la misma que el frontend. Adonis 7 no corre en Node 22. No usen Node 26 (Current). Guía: [`docs/node.md`](node.md).
+
 No hay que adivinar el orden. Para **cualquier** función nueva siempre es el mismo camino.
 
 ## 1. Ideas que se confunden
@@ -73,7 +75,7 @@ Imaginen que les tocó **inventario**. Copian esta receta cambiando nombres.
 
 ### Paso 1 — Modelo
 
-Archivo: `Backend/app/models/producto.ts` (el nombre real depende de la tabla que les toque).
+Archivo: `app/models/producto.ts` (el nombre real depende de la tabla que les toque).
 
 ```ts
 import { BaseModel, column } from '@adonisjs/lucid/orm'
@@ -93,7 +95,7 @@ Si el campo en SQL es `id_producto` y en TypeScript quieren `id`, usen `columnNa
 
 ### Paso 2 — Validador
 
-Archivo: `Backend/app/validators/producto.ts`.
+Archivo: `app/validators/producto.ts`.
 
 ```ts
 import vine from '@vinejs/vine'
@@ -107,7 +109,7 @@ Vine revisa tipos y tamaños **antes** de tocar la base. Si algo llega mal, resp
 
 ### Paso 3 — Servicio
 
-Archivo: `Backend/app/services/producto_service.ts`.
+Archivo: `app/services/producto_service.ts`.
 
 Aquí va: “¿existe?”, “¿este perfil puede verlo?”, “guardar”, “listar”.
 
@@ -115,7 +117,7 @@ El controlador solo dice `new ProductoService().list()`.
 
 ### Paso 4 — Transformer
 
-Archivo: `Backend/app/transformers/producto_transformer.ts`.
+Archivo: `app/transformers/producto_transformer.ts`.
 
 Ahí sale el JSON en camelCase. Nunca manden `password`, hashes ni filas crudas del pivote.
 
@@ -146,7 +148,7 @@ router
   .use(middleware.account())
 ```
 
-Adonis genera `controllers.Productos` solo si el archivo se llama como espera el framework (`productos_controller.ts`). Si no aparece, miren `Backend/.adonisjs/server/controllers.ts`.
+Adonis genera `controllers.Productos` solo si el archivo se llama como espera el framework (`productos_controller.ts`). Si no aparece, miren `.adonisjs/server/controllers.ts`.
 
 ### Paso 7 — Prueba
 
@@ -159,7 +161,6 @@ En `tests/functional/`:
 Correr:
 
 ```bash
-cd Backend
 node ace test
 ```
 
@@ -199,6 +200,11 @@ Esto ya lo pueden usar. Sirve para crear **Aprendiz**, **Funcionario**, etc., y 
 | `GET` | `/api/v1/roles/:id` | admin | un perfil + `moduleIds` + árbol con `granted` |
 | `PATCH` | `/api/v1/roles/:id` | admin | `{ name?, description?, active? }` |
 | `PUT` | `/api/v1/roles/:id/modules` | admin | `{ "moduleIds": [3] }` deja **solo** esos módulos |
+| `GET` | `/api/v1/users/options` | admin | perfiles activos y centros para el formulario |
+| `GET` | `/api/v1/users` | admin | lista usuarios |
+| `POST` | `/api/v1/users` | admin | crea usuario y le asigna perfil. Body: `{ nombres, apellidos, tipoDocumento, numeroDocumento, email, password, passwordConfirmation, idPerfil, idCformacion }` |
+| `GET` | `/api/v1/users/:id` | admin | ficha |
+| `PATCH` | `/api/v1/users/:id` | admin | cambia datos, perfil o estado. Contraseña opcional |
 | `GET` | `/api/v1/modules` | logueado | lista plana de módulos **concedidos** (el menú actual) |
 | `GET` | `/api/v1/modules/tree` | logueado | árbol: padres visibles para ubicar, `granted: true` solo en lo permitido |
 | `GET` | `/api/v1/modules/catalog` | admin | árbol de **todos** los módulos |
@@ -218,7 +224,9 @@ PUT /roles/4/modules   { "moduleIds": [12] }
 
 El perfil 4 puede **solo** la acción 12. El árbol muestra “Mi aplicacion → Seccion → Accion” para que el menú tenga dónde colgarse, pero `granted` es `true` únicamente en 12.
 
-Archivos: `role_service.ts`, `module_service.ts`, `module_tree.ts`, `roles_controller.ts`, `modules_controller.ts`, `admin_middleware.ts`.
+Cadena de menú: usuario → `id_perfil` → `modulo_perfil` → módulos. El front pinta `GET /modules`, no una lista fija.
+
+Archivos: `role_service.ts`, `module_service.ts`, `module_tree.ts`, `roles_controller.ts`, `modules_controller.ts`, `users_controller.ts`, `usuario_service.ts`, `admin_user_transformer.ts`, `admin_middleware.ts`.
 
 ## 6. Si les tocó una pantalla del Figma
 
