@@ -31,25 +31,6 @@ const dbConfig = defineConfig({
       },
       debug: app.inDev,
     },
-
-    /**
-     * SQLite local, opcional para experimentos fuera de PostgreSQL.
-     */
-    sqlite: {
-      client: 'better-sqlite3',
-      connection: {
-        filename: app.tmpPath('db.sqlite3'),
-      },
-      useNullAsDefault: true,
-      migrations: {
-        naturalSort: true,
-        paths: ['database/migrations'],
-      },
-      schemaGeneration: {
-        enabled: false,
-        rulesPaths: ['./database/schema_rules.js'],
-      },
-    },
   },
 })
 
