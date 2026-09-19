@@ -2,9 +2,13 @@
 
 Esta API es **AdonisJS 7**. Si nunca han tocado backend, léan esto antes de abrir archivos.
 
+**¿Les tocó armar un endpoint?** No adivinen la carpeta. Orden, dónde va cada archivo y cómo probarlo:
+
+**[como-armar-un-endpoint.md](./como-armar-un-endpoint.md)**
+
 **Node 24.21.0 + npm 11.19.0**, la misma que el frontend. Adonis 7 no corre en Node 22. No usen Node 26 (Current). Guía: [`docs/node.md`](node.md).
 
-No hay que adivinar el orden. Para **cualquier** función nueva siempre es el mismo camino.
+No hay que adivinar el orden. Para **cualquier** función nueva siempre es el mismo camino. El detalle (por qué ese orden, ejemplo de inventario, checklist) está en [`como-armar-un-endpoint.md`](./como-armar-un-endpoint.md).
 
 ## 1. Ideas que se confunden
 
@@ -71,7 +75,7 @@ El front manda `Authorization: Bearer <token>` después de `POST /api/v1/auth/lo
 
 ## 4. Receta copiable (función nueva)
 
-Imaginen que les tocó **inventario**. Copian esta receta cambiando nombres.
+Imaginen que les tocó **inventario**. Las tablas ya existen (`elemento`, `bodega`, `stand`, …). No las creen otra vez. Receta completa: [`como-armar-un-endpoint.md`](./como-armar-un-endpoint.md).
 
 ### Paso 1 — Modelo
 
@@ -234,10 +238,15 @@ El frontend ya tiene maquetas con datos de demostración. Les toca el **API** de
 
 ### Inventario
 
-1. Revisar el dump: ¿existe tabla de productos / movimientos? Si no existe, **no inventen la tabla**. Avísenle al grupo.
-2. Modelo de esa tabla → validador → servicio (filtrar por lo que el perfil pueda ver) → transformer → `GET/POST/PATCH /api/v1/inventario/...`
-3. Probar con Juan (Almacenista) y con alguien que no deba entrar.
-4. El menú ya tiene el módulo Inventario en el dump.
+Las tablas **ya están** en Postgres (`elemento`, `categoria`, `bodega`, `stand`, `item`, `unidad_medida`). **No** las vuelvan a crear con una migración.
+
+1. Sigan [`como-armar-un-endpoint.md`](./como-armar-un-endpoint.md) de punta a punta.
+2. Primera URL: `GET /api/v1/inventario/elementos`.
+3. Filtrar por el centro del usuario. El permiso es el módulo Inventario (no `id_modulo` en categoría).
+4. Probar con Juan (`juan@correo.com`) → 200. Sin token → 401.
+5. Préstamos es **otra tabla, después**. No la armen aquí.
+
+El menú ya tiene el módulo Inventario en el dump.
 
 ### Materiales de formación
 

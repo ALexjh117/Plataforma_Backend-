@@ -104,11 +104,12 @@ Devuelve el mismo contrato que `GET`. `422` si el correo o documento ya existen.
 
 ## Guía para el resto del equipo
 
-Si no han hecho backend, empiecen aquí (orden modelo → validador → servicio → controlador, perfiles y módulos padre/hijo/nieto):
+Si no han hecho backend, empiecen aquí:
 
-[docs/guia-para-el-equipo.md](docs/guia-para-el-equipo.md)
+1. Armar una URL nueva (modelo → servicio → controlador → ruta → test): [docs/como-armar-un-endpoint.md](docs/como-armar-un-endpoint.md)
+2. Perfiles, módulos padre/hijo/nieto: [docs/guia-para-el-equipo.md](docs/guia-para-el-equipo.md)
 
-Resumen de URLs: [docs/guia-endpoints.md](docs/guia-endpoints.md).
+Resumen de URLs ya listas: [docs/guia-endpoints.md](docs/guia-endpoints.md).
 
 ### `GET /api/v1/modules`
 
