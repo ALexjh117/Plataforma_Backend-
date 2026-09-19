@@ -2,9 +2,9 @@
 
 La explicación para quienes **no han hecho backend** está aquí:
 
-**[guia-para-el-equipo.md](./guia-para-el-equipo.md)**
+**[como-armar-un-endpoint.md](./como-armar-un-endpoint.md)** — dónde va el modelo, el servicio, el controlador, la ruta y cómo probar.
 
-Ahí va el orden modelo → validador → servicio → transformer → controlador → ruta → test, cómo crear perfiles (Aprendiz, Funcionario, …) y cómo colgar módulos padre / hijo / nieto.
+Conceptos (perfil vs módulo, padre/hijo/nieto): **[guia-para-el-equipo.md](./guia-para-el-equipo.md)**
 
 ## Recordatorio
 
